@@ -85,7 +85,7 @@ function AppointmentForm() {
       setDoctorLastName("");
       setAddress("");
       setHasVisited(false);
-      
+
       navigate("/");
     } catch (error) {
       console.error("Appointment creation error:", error);

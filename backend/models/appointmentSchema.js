@@ -1,83 +1,70 @@
-import mongoose from "mongoose";
-import validator from "validator";
+import mongoose from 'mongoose';
 
 const appointmentSchema = new mongoose.Schema({
-    status: {
-        type: String,
-        enum: ["Pending", "Accepted", "Rejected"],
-        default: "Pending"
-    },
     firstName: {
         type: String,
-        required: [true, "First Name Is Required!"],
-        minLength: [3, "First Name Must Contain At Least 3 Characters!"],
+        required: true
     },
     lastName: {
         type: String,
-        required: [true, "Last Name Is Required!"],
-        minLength: [3, "Last Name Must Contain At Least 3 Characters!"],
+        required: true
     },
     email: {
         type: String,
-        required: [true, "Email Is Required!"],
-        validate: [validator.isEmail, "Provide A Valid Email!"],
+        required: true
     },
     phone: {
         type: String,
-        required: [true, "Phone Is Required!"],
-        minLength: [11, "Phone Number Must Contain Exact 11 Digits!"],
-        maxLength: [11, "Phone Number Must Contain Exact 11 Digits!"],
+        required: true
     },
     nic: {
         type: String,
-        required: [true, "NIC Is Required!"],
-        minLength: [13, "NIC Must Contain Only 13 Digits!"],
-        maxLength: [13, "NIC Must Contain Only 13 Digits!"],
+        required: true
     },
     dob: {
         type: Date,
-        required: [true, "DOB Is Required!"],
+        required: true
     },
     gender: {
         type: String,
-        required: [true, "Gender Is Required!"],
-        enum: ["Male", "Female"],
+        required: true
     },
     appointment_date: {
-        required: [true, "Appointment Date Is Required!"],
         type: Date,
+        required: true
     },
     department: {
         type: String,
-        required: [true, "Department Is Required!"],
+        required: true
     },
     doctor: {
         firstName: {
             type: String,
-            required: [true]
+            required: true
         },
         lastName: {
             type: String,
-            required: [true]
-        },
+            required: true
+        }
     },
     hasVisited: {
         type: Boolean,
-        required: [true],
-        default: false,
-    },
-    doctorId: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: [true],
-    },
-    patientId: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: [true],
+        default: false
     },
     address: {
         type: String,
-        required: [true],
+        required: true
+    },
+    doctorId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+    },
+    patientId: {
+        type: String, // Change this to String
+        required: true
     }
 });
 
-export const Appointment = mongoose.model("Appointment", appointmentSchema);
+const Appointment = mongoose.model('Appointment', appointmentSchema);
+
+export default Appointment;

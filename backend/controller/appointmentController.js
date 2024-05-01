@@ -1,7 +1,13 @@
 import { CatchAsyncError } from "../middleweres/CatchAsyncError.js";
 import ErrorHandler from "../middleweres/errorMiddlewere.js";
 import { User } from "../models/UserSchema.js";
-import { Appointment } from "../models/AppointmentSchema.js";
+import Appointment from "../models/appointmentSchema.js";
+import { v4 as uuidv4 } from 'uuid';
+
+// Function to generate a new patient ID
+function generateNewPatientId() {
+    return uuidv4();
+}
 
 export const appointment = CatchAsyncError(async(req, res, next) => {
     const {
@@ -58,9 +64,10 @@ export const appointment = CatchAsyncError(async(req, res, next) => {
         );
     }
 
-    // Extract doctor's ID and patient's ID
+    // Extract doctor's ID and generate patient's ID
     const doctorId = isConflict[0]._id;
-    const patientId = req.user._id;
+    const patientId = generateNewPatientId();
+    console.log(patientId)
 
     // Create the appointment
     const createdAppointment = await Appointment.create({
@@ -80,7 +87,7 @@ export const appointment = CatchAsyncError(async(req, res, next) => {
         hasVisited,
         address,
         doctorId,
-        patientId,
+        patientId: patientId,
     });
 
     // Send response back to the client with status and appointment data
@@ -89,6 +96,7 @@ export const appointment = CatchAsyncError(async(req, res, next) => {
         data: {
             status: "success",
             appointment: createdAppointment,
+            patientId: patientId,
         },
     });
 });

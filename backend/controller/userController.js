@@ -292,9 +292,7 @@ export const addNewDoctor = CatchAsyncError(async(req, res, next) => {
             success: true,
             message: "New Doctor Registered",
             doctor,
-            token: patientToken,
         });
-
     } catch (error) {
         console.error("Error creating new doctor:", error);
         next(error); // Pass the error to the error handling middleware
