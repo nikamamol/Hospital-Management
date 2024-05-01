@@ -3,7 +3,7 @@ import { CatchAsyncError } from "../middleweres/CatchAsyncError.js";
 import ErrorHandler from "../middleweres/errorMiddlewere.js";
 
 
-export const sendMessage = CatchAsyncError(async(req, res) => {
+export const sendMessage = CatchAsyncError(async(req, res, next) => {
     const { firstName, lastName, email, phone, message } = req.body;
 
     if (!firstName || !lastName || !email || !phone || !message) {

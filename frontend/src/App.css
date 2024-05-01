@@ -568,10 +568,12 @@ nav .btn {
 
 nav .logoutBtn {
     background: linear-gradient(135deg, black, rgb(49, 49, 49));
+    cursor: pointer;
 }
 
 nav .loginBtn {
     background: linear-gradient(135deg, black, rgb(49, 49, 49));
+    cursor: pointer;
 }
 
 nav .hamburger {

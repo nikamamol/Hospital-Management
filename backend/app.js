@@ -4,20 +4,20 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
 import { dbConnect } from "./database/dbConnection.js";
-import messageRouter from "./router/messageRouter.js"; // Import messageRouter
+import messageRouter from "./router/messageRouter.js";
 import { erorMiddlewere } from "./middleweres/errorMiddlewere.js";
 import userRouter from "./router/userRouter.js";
 import appointmentRouter from "./router/appointmentRouter.js";
+
 const app = express();
 config({ path: "./config/config.env" });
 app.use(
     cors({
-        origin: [process.env.FRONTEND_URL, process.env.DASHBOARD_URL],
+        origin: true,
         methods: ["GET", "POST", "PUT", "DELETE"],
-        withCredentials: true,
+        credentials: true,
     })
 );
-
 //middlewere
 app.use(cookieParser());
 app.use(express.json());
@@ -39,4 +39,5 @@ dbConnect();
 
 //error middlewere
 app.use(erorMiddlewere);
+
 export default app;

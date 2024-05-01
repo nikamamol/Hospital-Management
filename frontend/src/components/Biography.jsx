@@ -1,5 +1,5 @@
-
-const Biography = ({imageUrl}) => {
+import imageUrl from "../../public/whoweare.png"
+const Biography = () => {
   return (
     <>
       <div className="container biography">

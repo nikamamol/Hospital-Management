@@ -2,9 +2,9 @@ import cloudinary from "cloudinary";
 import { CatchAsyncError } from "../middleweres/CatchAsyncError.js";
 import ErrorHandler from "../middleweres/errorMiddlewere.js";
 import { User } from "../models/UserSchema.js";
-import { generateToken as sendTokenResponse } from "../utils/jwtToken.js"; // Rename the import
+import { generateToken } from "../utils/jwtToken.js"; // Rename the import
 
-export const patientRegister = CatchAsyncError(async(req, res, next) => {
+export const patientRegister = async(req, res, next) => {
     const {
         firstName,
         lastName,
@@ -43,18 +43,13 @@ export const patientRegister = CatchAsyncError(async(req, res, next) => {
         role,
         password,
     });
-    sendTokenResponse(user, "User Registered Successfully", 201, res); // Use the renamed function
-});
+    generateToken(user, "User Registered Successfully", 201, res);
+};
 
-export const login = CatchAsyncError(async(req, res, next) => {
-    const { email, password, confirmPassword, role } = req.body;
-    if (!email || !password || !confirmPassword || !role) {
+export const login = async(req, res, next) => {
+    const { email, password, role } = req.body;
+    if (!email || !password || !role) {
         return next(new ErrorHandler("Please enter all fields", 400));
-    }
-    if (password !== confirmPassword) {
-        return next(
-            new ErrorHandler("Password and Confirm Password do not match", 400)
-        );
     }
     let user = await User.findOne({ email: email }).select("+password");
     if (!user) {
@@ -67,8 +62,79 @@ export const login = CatchAsyncError(async(req, res, next) => {
     if (role !== user.role) {
         return next(new ErrorHandler("User with this role not found", 400));
     }
-    sendTokenResponse(user, "User Logged in Successfully", 200, res); // Use the renamed function
-});
+    generateToken(user, "User Logged in Successfully", 200, res);
+};
+
+// export const patientRegister = async(req, res, next) => {
+//     const {
+//         firstName,
+//         lastName,
+//         gender,
+//         dob,
+//         email,
+//         password,
+//         phone,
+//         nic,
+//         role,
+//     } = req.body;
+//     if (!firstName ||
+//         !lastName ||
+//         !gender ||
+//         !dob ||
+//         !email ||
+//         !password ||
+//         !phone ||
+//         !nic ||
+//         !role
+//     ) {
+//         return next(new ErrorHandler("Please enter all fields", 400));
+//     }
+//     let user = await User.findOne({ email: email });
+//     if (user) {
+//         return next(new ErrorHandler("User already registered", 400));
+//     }
+//     user = await User.create({
+//         firstName,
+//         lastName,
+//         phone,
+//         gender,
+//         dob,
+//         email,
+//         nic,
+//         role,
+//         password,
+//     });
+//     const token = generateToken(user._id);
+//     res.status(201).json({
+//         success: true,
+//         message: "User Registered Successfully",
+//         token: token
+//     });
+// };
+
+// export const login = async(req, res, next) => {
+//     const { email, password, role } = req.body;
+//     if (!email || !password || !role) {
+//         return next(new ErrorHandler("Please enter all fields", 400));
+//     }
+//     let user = await User.findOne({ email: email }).select("+password");
+//     if (!user) {
+//         return next(new ErrorHandler("User not found", 404));
+//     }
+//     const isMatch = await user.comparePassword(password);
+//     if (!isMatch) {
+//         return next(new ErrorHandler("Invalid email or password", 400));
+//     }
+//     if (role !== user.role) {
+//         return next(new ErrorHandler("User with this role not found", 400));
+//     }
+//     const token = generateToken(user._id);
+//     res.status(200).json({
+//         success: true,
+//         message: "User Logged in Successfully",
+//         token: token
+//     });
+// };
 
 export const addNewAdmin = CatchAsyncError(async(req, res, next) => {
     const { firstName, lastName, gender, dob, email, password, phone, nic } =
@@ -226,7 +292,9 @@ export const addNewDoctor = CatchAsyncError(async(req, res, next) => {
             success: true,
             message: "New Doctor Registered",
             doctor,
+            token: patientToken,
         });
+
     } catch (error) {
         console.error("Error creating new doctor:", error);
         next(error); // Pass the error to the error handling middleware
